@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定一个对应的接口-->
+<mapper namespace="com.levi.log.dao.BlogDaoMapper">
+
+    <resultMap id="b_t" type="blog">
+        <result property="blogId" column="blogId"/>
+        <result property="blogTitle" column="blogTitle"/>
+        <result property="blogContent" column="blogContent"/>
+        <result property="blogRecommend" column="blogRecommend"/>
+        <result property="blogDescribe" column="blogDescribe"/>
+        <result property="blogFirstPicture" column="blogFirstPicture"/>
+        <result property="blogComment" column="blogComment"/>
+        <result property="blogPublish" column="blogPublish"/>
+        <result property="blogUpdateDate" column="blogUpdateDate"/>
+        <!--类型-->
+        <association property="type" javaType="type">
+            <result property="typeName" column="typeName"/>
+            <result property="typeId" column="typeId"/>
+        </association>
+        <!--用户-->
+        <association property="user" javaType="user">
+            <result property="userName" column="userName"/>
+            <result property="userProfilePhoto" column="userProfilePhoto"/>
+        </association>
+        <!--标签-->
+        <collection property="tagList" ofType="tag">
+            <result property="tagName" column="tagName"/>
+            <result property="tagId" column="tagId"/>
+        </collection>
+    </resultMap>
+
+    <!--添加博客-->
+    <insert id="addBlog" parameterType="blog">
+        insert into blog
+        values(#{blogId},#{blogTitle},#{blogDescribe},#{blogContent},
+        #{blogFirstPicture},#{blogFlag},#{blogClickNumber},#{blogComment},
+        #{blogPublish},#{blogRecommend},#{blogCreateDate},#{blogUpdateDate})
+    </insert>
+    <!--查询全部博客与类型-->
+    <select id="listBlog" resultMap="b_t">
+        select  b.*,t.* from blog_type bt
+        inner join blog b on b.blogId=bt.blog_type_blogId
+        inner join type t on t.typeId=bt.blog_type_typeId
+    </select>
+    <!--删除一个博客-->
+    <delete id="deleteBlog">
+        delete from blog where blogId=#{blogId}
+    </delete>
+    <!--根据id查询一个博客-->
+    <select id="getBlog" resultMap="b_t">
+        select  blog.*,type.typeId,tag.tagId from blog blog
+        left join blog_tag bt on blog.blogId=bt.blog_tag_blogId
+        left join tag tag on tag.tagId=bt.blog_tag_tagId
+        left join blog_type bty on bty.blog_type_blogId=blog.blogId
+        left join type type on type.typeId=bty.blog_type_typeId
+        where blog.blogId=#{blogId}
+    </select>
+    <!--更新一个博客-->
+    <update id="updateBlog" parameterType="blog">
+        update blog set
+        blogTitle=#{blogTitle},blogContent=#{blogContent},blogDescribe=#{blogDescribe}
+        ,blogFirstPicture=#{blogFirstPicture},blogFlag=#{blogFlag},blogComment=#{blogComment}
+        ,blogPublish=#{blogPublish},blogRecommend=#{blogRecommend},blogUpdateDate=#{blogUpdateDate}
+        where blogId=#{blogId}
+    </update>
+    <!--查询推荐的博客-->
+    <select id="ListBlogRecomment" resultType="blog">
+        select blogTitle,blogId from blog
+        where blogRecommend=1 limit 0,4
+    </select>
+    <!--前端显示页面-->
+    <select id="listBlogView" resultMap="b_t">
+        select  b.*,t.* from blog_type bt
+        inner join blog b on b.blogId=bt.blog_type_blogId
+        inner join type t on t.typeId=bt.blog_type_typeId
+        where b.blogPublish=1
+    </select>
+    <!--搜索功能-->
+    <select id="listBlogQuery" resultMap="b_t">
+        select  b.*,t.* from blog_type bt
+        inner join blog b on b.blogId=bt.blog_type_blogId
+        inner join type t on t.typeId=bt.blog_type_typeId
+        where b.blogPublish=1
+        and b.blogTitle like concat('%',#{query},'%') or b.blogContent like concat('%',#{query},'%')
+    </select>
+    <!--查询一个博客-->
+    <select id="getBlogView" resultType="blog">
+        select * from blog where blogId=#{blogId}
+    </select>
+    <!--根据type查询数据-->
+    <select id="listBlogTypeId" resultMap="b_t">
+        select  b.*,t.* from blog_type bt
+        inner join blog b on b.blogId=bt.blog_type_blogId
+        inner join type t on t.typeId=bt.blog_type_typeId
+        where t.typeId=#{typeId}
+    </select>
+    <!--根据tag查询数据-->
+    <select id="listBlogTagId" resultMap="b_t">
+        select  b.*,t.*,type.* from blog_tag bt
+        inner join blog b on b.blogId=bt.blog_tag_blogId
+        inner join tag t on t.tagId=bt.blog_tag_tagId
+        inner join blog_type bty on b.blogId=bty.blog_type_blogId
+        inner join type type on type.typeId=bty.blog_type_typeId
+        where t.tagId=#{tagId}
+    </select>
+    <!--查询全部年份-->
+    <select id="blogCreateYears" resultType="string">
+        select date_format(blog.blogCreateDate,"%Y") as year from blog
+    </select>
+    <!--按照年份查询-->
+    <select id="blogByYears" resultType="blog">
+        select * from blog where date_format(blog.blogCreateDate,'%Y')=#{year}
+    </select>
+</mapper>

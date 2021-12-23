@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定一个对应的接口-->
+<mapper namespace="com.levi.log.dao.TagDaoMapper">
+    <!--根据id查询一个类型-->
+    <select id="getTag" resultType="tag">
+        select * from tag where tagId=#{tagId}
+    </select>
+    <!--根据id查询一个类型-->
+    <select id="getTagName" resultType="tag">
+        select * from tag where tagName=#{tagName}
+    </select>
+    <!--添加一个类型-->
+    <insert id="saveTag">
+        insert into tag (tagName)value(#{tagName})
+    </insert>
+    <!--更新一个类型-->
+    <update id="updateTag" parameterType="tag">
+        update tag set tagName=#{tagName} where tagId=#{tagId}
+    </update>
+    <!--删除一个类型-->
+    <delete id="deleteTag">
+        delete from tag where tagId=#{tagId}
+    </delete>
+    <!--查询全部-->
+    <select id="listTag" resultType="tag">
+        select * from tag
+    </select>
+    <!--前端显示查询-->
+    <select id="listTagView" resultType="tag">
+        select tag.*,count(bt.blog_tag_tagId) as blogNum from tag tag
+        left join blog_tag bt on bt.blog_tag_tagId=tag.tagId
+        group by tagName order by blognum desc limit 0,8
+    </select>
+    <!--前端显示查询-->
+    <select id="listTagViewTag" resultType="tag">
+        select tag.*,count(bt.blog_tag_tagId) as blogNum from tag tag
+        left join blog_tag bt on bt.blog_tag_tagId=tag.tagId
+        group by tagName order by blognum desc
+    </select>
+</mapper>

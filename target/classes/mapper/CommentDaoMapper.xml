@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定一个对应的接口-->
+<mapper namespace="com.levi.log.dao.CommentDaoMapper">
+    <!--添加一个评论-->
+    <insert id="addComment" parameterType="comment">
+        insert into comment value
+        (null,#{commentNike},#{commentEmail},#{commentPhoto},
+        #{commentContent},#{commentCreateDate},#{commentBlogId},#{commentBlogger})
+    </insert>
+    <!--根据博客id查询-->
+    <select id="listCommentByBlogId" resultType="comment">
+        select * from comment where commentBlogId=#{blogId}
+    </select>
+</mapper>

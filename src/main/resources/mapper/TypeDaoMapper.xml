@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定一个对应的接口-->
+<mapper namespace="com.levi.log.dao.TypeDaoMapper">
+    <!--根据id查询一个类型-->
+    <select id="getType" resultType="type">
+        select * from type where typeId=#{typeId}
+    </select>
+    <!--根据id查询一个类型-->
+    <select id="getTypeName" resultType="type">
+        select * from type where typeName=#{typeName}
+    </select>
+    <!--添加一个类型-->
+    <insert id="saveType">
+        insert into type (typeName)value(#{typeName})
+    </insert>
+    <!--更新一个类型-->
+    <update id="updateType" parameterType="type">
+        update type set typeName=#{typeName} where typeId=#{typeId}
+    </update>
+    <!--删除一个类型-->
+    <delete id="deleteType">
+        delete from type where typeId=#{typeId}
+    </delete>
+    <!--查询全部-->
+    <select id="listType" resultType="type">
+        select * from type
+    </select>
+    <!--前端显示查询-->
+    <select id="listTypeView" resultType="type">
+        select type.*,count(bt.blog_type_blogId) as blogNum from type type
+        left join blog_type bt on bt.blog_type_typeId=type.typeId
+        group by typeName order by blognum desc limit 0,6
+    </select>
+    <!--前端显示查询-->
+    <select id="listTypeViewType" resultType="type">
+        select type.*,count(bt.blog_type_blogId) as blogNum from type type
+        left join blog_type bt on bt.blog_type_typeId=type.typeId
+        group by typeName order by blognum desc
+    </select>
+</mapper>

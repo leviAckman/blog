@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--绑定一个对应的接口-->
+<mapper namespace="com.levi.log.dao.BlogTypeDaoMapper">
+    <insert id="addBlogType">
+        insert into blog_type value(#{blogId},#{typeId})
+    </insert>
+    <!--删除tag-->
+    <delete id="deleteBlogType">
+        delete from blog_type where blog_type_blogId=#{blogId}
+    </delete>
+    <!--博客修改类型-->
+    <update id="updateBlogType">
+        update blog_type set blog_type_typeId=#{typeId} where blog_type_blogId=#{blogId}
+    </update>
+</mapper>

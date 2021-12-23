@@ -1,0 +1,30 @@
+package com.levi.log.handler;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.ModelAndView;
+
+import javax.servlet.http.HttpServletRequest;
+
+@ControllerAdvice
+public class ControllerExceptionHandler {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+    
+    @ExceptionHandler(Exception.class)
+    public ModelAndView exceptionHandler(HttpServletRequest request,Exception e) throws Exception {
+        log.debug("RequestUrl：{},Exception：{}",request.getRequestURI(),e);
+
+        /*自定义异常类 交给springBoot处理*/
+        if(AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class) != null){
+            throw e;
+        }
+        e.printStackTrace();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("error/error");
+        return modelAndView;
+    }
+}
